@@ -2,13 +2,14 @@
     "name": "Snap",
     "version": "0.1",
     "description": "Fast and simple webpage sharing!",
-    "permissions": ["activeTab","declarativeContent","storage"],
+    "permissions": ["activeTab","storage","notifications"],
     "background": {
       "scripts": ["background.js"],
       "persistent": false
     },
-    "page_action":{
-    	"default_popup": "popup.html"
+    "browser_action":{
+    	"default_popup": "popup.html",
+    	"default_icon": "logo.png"
     },
     "options_page": "options.html",
     "manifest_version": 2

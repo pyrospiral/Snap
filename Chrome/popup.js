@@ -1,16 +1,25 @@
-let changeColor = document.getElementById('changeColor');
-
-chrome.storage.sync.get('color', function(data) {
-  changeColor.style.backgroundColor = data.color;
-  changeColor.setAttribute('value', data.color);
-});
+let send = document.getElementById('send');
+let textbox = document.getElementById('text');
 
 
-changeColor.onclick = function(element) {
-    let color = element.target.value;
+
+send.onclick = function(element) {
+	
     chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-      chrome.tabs.executeScript(
-          tabs[0].id,
-          {code: 'document.body.style.backgroundColor = "' + color + '";'});
+
+      	textbox.innerHTML = tabs[0].url;
+
+    	var options = {
+		  type: "basic",
+		  title: "Snapped!",
+		  message: "Link: "+tabs[0].url,
+		  iconUrl: "logo.png"
+		}
+
+		id = "1";
+
+      	chrome.notifications.create(id, options);
+
     });
+
   };
