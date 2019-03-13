@@ -1,7 +1,7 @@
 var snapDict = {};
 
 var interval = setTimeout(lookForSnaps, 3000);
-const serverAddress = 'http://127.0.0.1:5000';
+const serverAddress = 'http://snap-env.p96p3i32sv.us-east-2.elasticbeanstalk.com';
 
 console.log("Started!")
 
