@@ -1,30 +1,54 @@
 from flask import Flask
+from flask_cors import CORS
+import logging
+import json
+import uuid
 
-# print a nice greeting.
-def say_hello(username = "World"):
+stored_snap = None
+
+def say_hello(username="World"):
     return '<p>Hello %s!</p>\n' % username
 
-# some bits of text for the page.
 header_text = '''
     <html>\n<head> <title>EB Flask Test</title> </head>\n<body>'''
-instructions = '''
-    <p><em>Hint</em>: This is a RESTful web service! Append a username
-    to the URL (for example: <code>/Thelonious</code>) to say hello to
-    someone specific.</p>\n'''
-home_link = '<p><a href="/">Back</a></p>\n'
 footer_text = '</body>\n</html>'
 
-# EB looks for an 'application' callable by default.
+json.dumps({'name': 'testname', 'link': 'testlink'})
+
+
+def send_snap():
+    global stored_snap
+    if stored_snap:
+        temp = stored_snap
+        stored_snap = None
+        return json.dumps(temp)
+    else:
+        return json.dumps({'name': 'none', 'link': 'none'})
+
+
+def keep_snap(snapinfo):
+    global stored_snap
+    name,link = snapinfo.split("+snap+")
+    snapid = uuid.uuid4().int
+    stored_snap = {}
+    stored_snap["name"] = name
+    stored_snap["id"] = snapid
+    stored_snap["link"] = link
+    return "Snapped! "+link
+
+
 application = Flask(__name__)
+CORS(application)
 
 # add a rule for the index page.
 application.add_url_rule('/', 'index', (lambda: header_text +
-    say_hello() + instructions + footer_text))
+                                        say_hello() + footer_text))
 
-# add a rule when the page is accessed with a name appended to the site
-# URL.
-application.add_url_rule('/<username>', 'hello', (lambda username:
-    header_text + say_hello(username) + home_link + footer_text))
+# snap search request : look if there's been a snap.
+# keep only one snap in memory, once its sent, remove it.
+application.add_url_rule('/getsnap/<var>', 'snap', (lambda var: send_snap()))
+
+application.add_url_rule('/sendsnap/<path:snapinfo>', 'sendsnap', (lambda snapinfo: keep_snap(snapinfo)))
 
 # run the app.
 if __name__ == "__main__":
